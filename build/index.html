@@ -112,13 +112,12 @@
              ">> 1. <a href='https://work.201422024.xyz/' target='_blank'>Personal portfolio Website</a> - May load a little slowly.",
              ">> 2. <a href='https://about.201422024.xyz/' target='_blank'>Personal introduction Website</a> - Information of little value.",
              ">> 3. <a href='https://arts.201422024.xyz/' target='_blank'>Notion's Portfolio Website</a> - Didn't take care of it much."
-],
+          ],
           contact: [
               "========================",
               "<span style='color: red;'>Contact Me</span>",
               "==========",
               ">> Email: <a href='mailto:kuihua2222@gmail.com'>Send Message</a>",
-              //"X: https://x.com/WEIJunben",
               ">> TG: <a href='https://t.me/+vgCmLINFDts2NGVl'>TG Channel</a>"
           ],
           help: [
@@ -130,7 +129,6 @@
               "<span style='color: yellow;'> contact </span> or <span style='color: yellow;'> c </span> - Get in touch.",
               "<span style='color: yellow;'> clear </span> or <span style='color: yellow;'> cl </span> - Clear the terminal.",
               "<span style='color: yellow;'> welcome </span> or <span style='color: yellow;'> w </span> - Display the welcome message."
-          
             ]
       };
 
@@ -152,7 +150,6 @@
       }
 
       function handleCommand(command) {
-          // 检查是否为缩写命令
           const shortcutCommand = commandShortcuts[command];
           if (shortcutCommand) {
               command = shortcutCommand;
@@ -162,10 +159,29 @@
           
           if (matchedCommand) {
               sections[matchedCommand].forEach(line => appendOutput(line));
+              if (matchedCommand === 'projects') {
+                  appendOutput("-- Type the number (1, 2, or 3) to open the corresponding link --");
+              }
           } else if (command === 'clear') {
               output.innerHTML = '';
+          } else if (['1', '2', '3'].includes(command)) {
+              openProjectLink(command);
           } else {
               appendOutput(`Command not found: ${command}`);
+          }
+      }
+
+      function openProjectLink(command) {
+          const links = [
+              'https://work.201422024.xyz/',
+              'https://about.201422024.xyz/',
+              'https://arts.201422024.xyz/'
+          ];
+          const index = parseInt(command) - 1;
+          if (index >= 0 && index < links.length) {
+              window.open(links[index], '_blank');
+          } else {
+              appendOutput(`Invalid project number: ${command}`);
           }
       }
 
@@ -182,9 +198,9 @@
       appendOutput("Welcome to My Portfolio Website >>> <span style='color: yellow;' id='kuih-link'>Kui-H</span> <<<  Click  ");
       appendOutput("Type '<span style='color: yellow;'> help </span> or <span style='color: yellow;'> h </span>' to see available commands.");
     
-// 点击事件，显示 ASCII 艺术字（葵花）
-document.getElementById('kuih-link').addEventListener('click', () => {
-    appendOutput(`<pre style='color: yellow;'>
+      // 点击事件，显示 ASCII 艺术字（葵花）
+      document.getElementById('kuih-link').addEventListener('click', () => {
+          appendOutput(`<pre style='color: yellow;'>
         
 ==========================                             
   _  __          _   _ 
