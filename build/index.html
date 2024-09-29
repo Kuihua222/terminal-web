@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kui-H</title>
+  <link rel="stylesheet" href="output.css">
+  <style>
+      body {
+          background-color: #1a1a1a;
+          color: #00ff00;
+          font-family: 'Courier New', Courier, monospace;
+      }
+
+      #terminal {
+          max-height: 80vh;
+          overflow-y: scroll;
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none;  /* Internet Explorer 10+ */
+      }
+
+      a {
+          color: #a836ff; /* 设置链接颜色为橙色 */
+          text-decoration: none; /* 去掉下划线 */
+      }
+      
+      a:hover {
+          text-decoration: underline; /* 鼠标悬停时显示下划线 */
+      }
+
+      #terminal::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, and Opera */
+      }
+      
+      .typing {
+          border-right: 2px solid #00ff00;
+          animation: blink 0.7s infinite step-end;
+      }
+
+      @keyframes blink {
+          from,
+          to {
+              border-color: transparent;
+          }
+
+          50% {
+              border-color: #00ff00;
+          }
+      }
+
+      input {
+          background: transparent;
+          border: none;
+          outline: none;
+          color: #00ff00;
+          font-family: inherit;
+          font-size: inherit;
+      }
+      
+      input:hover {
+            background: rgba(0, 255, 0, 0.1); /* 悬停时背景颜色 */
+        }
+
+        #terminal:hover {
+            border: 2px solid #00ff00; /* 悬停时添加边框 */
+        }
+
+        #kuih-link {
+            color: #a836ff; /* 设置链接颜色 */
+            cursor: pointer; /* 鼠标指针样式 */
+            transition: color 0.3s; /* 添加过渡效果 */
+        }
+
+        #kuih-link:hover {
+            color: #ffcc00; /* 鼠标悬停时改变颜色 */
+        } 
+  </style>
+</head>
+
+<body class="flex items-center justify-center h-screen">
+
+  <div class="w-full max-w-2xl p-4">
+      <div id="terminal" class="bg-black p-6 rounded-lg shadow-lg">
+          <div id="output"></div>
+          <div class="flex">
+              <span>$</span>
+              <input type="text" id="input" class="flex-grow pl-2" autofocus>
+              <span class="typing"></span>
+          </div>
+      </div>
+  </div>
+
+  <script>
+      const sections = {
+          welcome: [
+              "========================",
+              ">> Welcome to My Portfolio Website",
+              ">> Type '<span style='color: yellow;'> help </span> or <span style='color: yellow;'> h </span>' to see available commands."  
+          ],
+          about: [
+              "========================",
+              "<span style='color: red;'>About Me</span>",
+              "========",
+              ">> Hey I am Kui-H an Amateur Artist who likes to create interesting things.",
+              ">> It's more important for me to be interesting than to be preachy."
+          ],
+          projects: [
+              "========",
+              "<span style='color: red;'>Projects</span>",
+              "========",
+              ">> 1. <a href='https://work.201422024.xyz/'>Personal portfolio Website</a> - May load a little slowly.",
+              ">> 2. <a href='https://about.201422024.xyz/'>Personal introduction Website</a> - Information of little value.",
+              ">> 3. <a href='https://arts.201422024.xyz/'>Notion's Portfolio Website</a> - Didn't take care of it much."
+          ],
+          contact: [
+              "========================",
+              "<span style='color: red;'>Contact Me</span>",
+              "==========",
+              ">> Email: <a href='mailto:kuihua2222@gmail.com'>Send Message</a>",
+              //"X: https://x.com/WEIJunben",
+              ">> TG: <a href='https://t.me/+vgCmLINFDts2NGVl'>TG Channel</a>"
+          ],
+          help: [
+              "========================",
+              "<span style='color: red;'>Available Commands:</span>",
+              "========",
+              "<span style='color: yellow;'> about </span> or <span style='color: yellow;'> a </span> - Who am I?",
+              "<span style='color: yellow;'> projects </span> or <span style='color: yellow;'> p </span> - See my work.",
+              "<span style='color: yellow;'> contact </span> or <span style='color: yellow;'> c </span> - Get in touch.",
+              "<span style='color: yellow;'> clear </span> or <span style='color: yellow;'> cl </span> - Clear the terminal.",
+              "<span style='color: yellow;'> welcome </span> or <span style='color: yellow;'> wl </span> - Display the welcome message."
+          
+            ]
+      };
+
+      const commandShortcuts = {
+          a: 'about',
+          p: 'projects',
+          c: 'contact',
+          cl: 'clear',
+          w: 'welcome',
+          h: 'help'
+      };
+
+      const input = document.getElementById('input');
+      const output = document.getElementById('output');
+
+      function appendOutput(text) {
+          output.innerHTML += `<div>${text}</div>`;
+          document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
+      }
+
+      function handleCommand(command) {
+          // 检查是否为缩写命令
+          const shortcutCommand = commandShortcuts[command];
+          if (shortcutCommand) {
+              command = shortcutCommand;
+          }
+
+          const matchedCommand = Object.keys(sections).find(cmd => cmd.startsWith(command));
+          
+          if (matchedCommand) {
+              sections[matchedCommand].forEach(line => appendOutput(line));
+          } else if (command === 'clear') {
+              output.innerHTML = '';
+          } else {
+              appendOutput(`Command not found: ${command}`);
+          }
+      }
+
+      input.addEventListener('keypress', function (e) {
+          if (e.key === 'Enter') {
+              const command = input.value.trim().toLowerCase();
+              appendOutput(`$ ${command}`);
+              input.value = '';
+              handleCommand(command);
+          }
+      });
+
+      // Initialize welcome message
+      appendOutput("Welcome to My Portfolio Website >>> <span style='color: yellow;' id='kuih-link'>Kui-H</span> <<<  Click  ");
+      appendOutput("Type '<span style='color: yellow;'> help </span> or <span style='color: yellow;'> h </span>' to see available commands.");
+    
+// 点击事件，显示 ASCII 艺术字（葵花）
+document.getElementById('kuih-link').addEventListener('click', () => {
+    appendOutput(`<pre style='color: yellow;'>
+        
+==========================                             
+  _  __          _   _ 
+ | |/ /         | | | |
+ | ' /   _____  | |_| |
+ | . \\ |_____|  |  _  |
+ |_|_ \\         | _||_| 
+                        
+==========================
+
+    </pre>`);
+});
+
+  </script>
+</body>
+
+</html>
